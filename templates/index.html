@@ -169,9 +169,8 @@
         .roster-actions { display: flex; gap: 0.5rem; }
 
         .roster-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 0;
+            column-width: 220px;
+            column-gap: 0;
             border-top: 1px solid var(--border);
         }
         .roster-row {
@@ -183,6 +182,7 @@
             cursor: pointer;
             transition: background 0.15s ease;
             user-select: none;
+            break-inside: avoid;
         }
         .roster-row:hover { background: var(--surface); }
         .roster-name {
@@ -193,9 +193,6 @@
         }
         .roster-row.absent .roster-name {
             color: var(--absent);
-            text-decoration: line-through;
-            text-decoration-thickness: 1px;
-            text-decoration-color: var(--border-strong);
         }
         .check {
             width: 1rem;
@@ -547,8 +544,8 @@
             'Olin H', 'Olivia P', 'Rebekah M', 'Ryder D', 'Sam P', 'Spencer C', 'Trent W'
         ];
 
-        let allStudents = [...DEFAULT_STUDENTS];
-        let absentSet = new Set();
+        let allStudents = [...DEFAULT_STUDENTS].sort((a, b) => a.localeCompare(b));
+        let absentSet = new Set(allStudents);
         let pickedSet = new Set();
         let pickedOrder = [];
         let isSpinning = false;
@@ -608,6 +605,7 @@
             const name = input.value.trim();
             if (name && !allStudents.includes(name)) {
                 allStudents.push(name);
+                allStudents.sort((a, b) => a.localeCompare(b));
                 input.value = '';
                 renderRoster();
                 updatePickedMeta();
