@@ -784,13 +784,19 @@
             const winnerIndex = Math.floor(Math.random() * n);
             const winnerName = wheelNames[winnerIndex];
 
-            const baseTarget = -Math.PI / 2 - winnerIndex * sliceAngle - sliceAngle / 2;
-            const fullSpins = (3 + Math.floor(Math.random() * 2)) * Math.PI * 2;
+            const TWO_PI = Math.PI * 2;
+            const winnerOffset = -Math.PI / 2 - winnerIndex * sliceAngle - sliceAngle / 2;
             const jitter = (Math.random() - 0.5) * sliceAngle * 0.6;
-            const targetAngle = baseTarget - fullSpins + jitter;
+            const desiredFinal = winnerOffset + jitter;
 
+            // Shortest negative-direction alignment to the target slice, in (-2π, 0]
+            let alignment = ((desiredFinal - wheelAngle) % TWO_PI);
+            if (alignment > 0) alignment -= TWO_PI;
+
+            // Add 1–2 extra full rotations so every spin makes at least one visible loop
+            const extraSpins = (1 + Math.floor(Math.random() * 2)) * TWO_PI;
             const startAngle = wheelAngle;
-            const totalDelta = targetAngle - startAngle;
+            const totalDelta = alignment - extraSpins;
             const duration = 1800 + Math.random() * 500;
             const startTime = performance.now();
 
